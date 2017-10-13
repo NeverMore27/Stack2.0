@@ -6,7 +6,7 @@ TEST_CASE("push")
 {
     stack<int> Stack;
     Stack.push(5);
-    Stack.pash(7);
+    Stack.push(7);
     int val=Stack.pop()
     REQUIRE(Stack.count() == 2);
     REQUIRE( val== 7);
@@ -16,7 +16,7 @@ TEST_CASE("pop")
 {
     stack<int> Stack;
     Stack.push(5);
-    Stack.pash(7);
+    Stack.push(7);
     Stack.push(9);
     int val =Stack.pop();
     REQUIRE(Stack.count() == 2);
@@ -32,7 +32,7 @@ TEST_CASE("2")
 {
     stack<int> Stack;
     Stack.push(5);
-    Stack.pash(7);
+    Stack.push(7);
     Stack.push(9);
     stack<int> s(Stack);
     REQUIRE(s.count() == 3);
@@ -47,7 +47,7 @@ TEST_CASE("2")
 {
     stack<int> Stack;
     Stack.push(5);
-    Stack.pash(7);
+    Stack.push(7);
     Stack.push(9);
     stack<int> s(Stack);
     REQUIRE(s == Stack);
