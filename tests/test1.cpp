@@ -8,11 +8,29 @@ TEST_CASE("init")
     REQUIRE(s.count() == 0);
      REQUIRE(!s.empty());
 }
-
+TEST_CASE("pop") 
+{
+    forward_list<int> v={1, 2, 4);
+    int s = v.pop_back();
+	int z = v.pop_front();                     
+    REQUIRE(s== 4);
+    REQUIRE(s.count() == 1)                  
+    REQUIRE(z==1);
+}
 TEST_CASE("init list") 
 {
     forward_list<int> s={1, 2, 3, 4, 5};
+    int s = v.pop_back();
     REQUIRE(s.count() == 5);
+     s = v.pop_back();
+    REQUIRE(s.count() == 4);
+     s = v.pop_back();
+    REQUIRE(s.count() == 3);
+     s = v.pop_back();
+    REQUIRE(s.count() == 2);
+     s = v.pop_back();
+    REQUIRE(s.count() == 1);
+    REQUIRE(!v.empty());
 }
 
 TEST_CASE("push") 
