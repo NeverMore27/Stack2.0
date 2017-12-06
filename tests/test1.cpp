@@ -41,4 +41,10 @@ TEST_CASE("push")
     REQUIRE(s.count() == 2);
 }
 
- 
+ TEST_CASE("==") 
+{
+   forward_list<int> s = {1, 2, 5, 9};
+   forward_list<int> m = {1, 2, 5, 9};
+    REQUIRE(m == s);
+}
+
