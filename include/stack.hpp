@@ -1,124 +1,233 @@
 #include <iostream>
-#include <string>
-template <typename T>
-class stack
-{
-public:
-	stack();
-	~stack();
-	stack(const stack<T>&);
-	stack<T>& operator =(const stack<T>&);
-	size_t count() const;
-	void push(T const &);
-	T pop();
-	void stack_print();
+
+
+template <class Ty>
+class forward_list {
 private:
-	T * array_;
-	size_t array_size_;
-	size_t count_;
-	void swap(size_t, const T*, T*&);
-};
-template <typename T>
-void stack<T>::swap(size_t count, const T* _ar, T*& ar)
-{
-	ar = new T[count];
-	std::copy(_ar, _ar + count, ar);
-}
-template <typename T>
-stack<T>::stack()
-{
-	array_size_ = 0;
-	count_ = 0;
-	array_ = nullptr;
-}
-template <typename T>
-stack<T>:: ~stack()
-{
-	array_size_ = 0;
-	count_ = 0;
-	delete[] array_;
-}
-template <typename T>
-stack<T>::stack(const stack& object)
-{
-	array_size_ = object.array_size_;
-	count_ = object.count_;
-	swap(count_, object.array_, array_);
-}
-template <typename T>
-stack<T>& stack<T>:: operator =(const stack<T>&object)
-{
-	if (this != &object)
+	struct node
 	{
-		array_size_ = object.array_size_;
-		count_ = object.count_;
-		delete[] array_;
-		swap(count_, object.array_, array_);
+		Ty data;
+		node* next;
+		node() : next(nullptr) {};
+		node(const Ty& t) : data{ t }, next{ nullptr } {};
+		node(Ty&& t) : data{ std::move(t) }, next{ nullptr } {};
+	};
+	node *head;
+	size_t count_;
+
+public:
+	forward_list() : count_{ 0 }, head{ nullptr } {};
+	forward_list(const forward_list& other);
+	forward_list(forward_list&& other);
+	forward_list& operator=(const forward_list& other);
+	forward_list& operator=(forward_list&& other);
+	~forward_list();
+	void clear();
+	void push_back(const Ty& val);
+	void push_front(const Ty &val);
+	template<typename Args>
+	void emplace_back(Args&& val);
+	template<typename Args>
+	void emplace_front(Args &&val);
+	bool empty();
+	Ty pop_back();
+	Ty pop_front();
+	size_t count();
+	void swap(forward_list& other);
+	void show()
+	 {
+		node *temp = head;
+		while (temp != nullptr)
+			{
+			std::cout << temp->data << " ";
+			temp = temp->next;
+			}
+	};
+	forward_list(std::initializer_list<Ty> list);
+};
+template <class Ty>
+forward_list<Ty>::forward_list(const forward_list& other)
+{
+	head = nullptr; count_ = 0;
+	node *pTemp = other.head;
+	while (pTemp != nullptr)
+	{
+		this->push_back(pTemp->data);
+		pTemp = pTemp->next;
+	}
+}
+
+template <class Ty>
+forward_list<Ty>::forward_list(forward_list&& other)
+{
+	head = nullptr; count_ = 0;
+	node *pTemp = other.head;
+	while (pTemp != nullptr)
+	{
+		this->emplace_back(pTemp->data);
+		pTemp = pTemp->next;
+	}
+}
+
+
+
+template <class Ty>
+void forward_list<Ty>::swap(forward_list& other)
+{
+	std::swap(count_, other.count_);
+	std::swap(head, other.head);
+}
+
+template <class Ty>
+forward_list<Ty>& forward_list<Ty>:: operator=(const forward_list& other)
+{
+	if (this != &other)
+	{
+		forward_list{ other }.swap(*this);
 	}
 	return *this;
 }
-template <typename T>
-void stack<T>::push(T const &value)
+
+template <class Ty>
+forward_list<Ty>& forward_list<Ty>:: operator=(forward_list&& other)
 {
-	if (count_ == 0)
+	if (this != &other)
 	{
-		
-			count_ = 1;
-			array_size_ = 1;
-			array_ = new T[count_];
-			array_[0] = value;
+		forward_list{ other }.swap(*this);
 	}
-	else 
-	{
-		if (array_size_ == count_)
-		{
-			T *ptr = array_;
-			count_ = count_ * 2;
-			swap(count_, ptr, array_);
-			delete[] ptr;
-		}
-		array_[array_size_++] = value;
-	}
+	return *this;
 }
-template <typename T>
-T stack<T>::pop()
+
+template <class Ty>
+bool forward_list<Ty>::empty()
 {
-	if (count_ > 0) 
-	{
-		T value = array_[--array_size_];
-		if (array_size_ == 0)
-		{
-			delete[] array_;
-			count_ = 0;
-		}
-		else {
-			if (array_size_ * 2 == count_) {
-				T *ptr = array_;
-				array_size_ /= 2;
-				swap(count_, ptr, array_);
-				delete[] ptr;
-			}
-		}
-		return value;
-	}
-	else 
-	{
-		throw "Stack is empty";
-	}
+	return (count_ == 0);
 }
-template <typename T>
-size_t stack<T>::count() const
+
+template <class Ty>
+forward_list<Ty>::~forward_list()
+{
+	clear();
+}
+
+template <class Ty>
+void forward_list<Ty>::clear()
+{
+	node *cur_ = head;
+	node *deleted_ = head;
+	while (deleted_ != nullptr)
+	{
+		cur_ = cur_->next;
+		delete deleted_;
+		deleted_ = cur_;
+	}
+	count_ = 0;
+	head = nullptr;
+}
+
+template <class Ty>
+void forward_list<Ty>::push_front(const Ty &val)
+{
+	node *tmp = new node;
+	tmp->data = val;
+	tmp->next = head;
+	head = tmp;
+	count_++;
+}
+
+template <class Ty>
+template<typename Args>
+void forward_list<Ty>::emplace_front(Args &&val)
+{
+	node *tmp = new node(std::forward<Args>(val));
+	tmp->next = head;
+	head = tmp;
+	count_++;
+}
+
+template <class Ty>
+void forward_list<Ty>::push_back(const Ty &val)
+{
+	node* front = head;
+	if (front != nullptr)
+	{
+		while (front->next != nullptr)
+		{
+			front = front->next;
+		}
+		front->next = new node(val);
+	}
+	else
+	{
+		front = new node(val);
+		head = front;
+	}
+	count_++;
+}
+
+template <class Ty>
+template<typename Args>
+void forward_list<Ty>::emplace_back(Args &&val)
+{
+	node* front = head;
+	if (front != nullptr)
+	{
+		while (front->next != nullptr)
+		{
+			front = front->next;
+		}
+		front->next = new node(std::forward<Args>(val));
+	}
+	else
+	{
+		front = new node(std::forward<Args>(val));
+		head = front;
+	}
+	count_++;
+}
+
+template <class Ty>
+size_t forward_list<Ty>::count()
 {
 	return count_;
 }
-template <typename T>
-void stack<T>::stack_print()
+
+template <class Ty>
+Ty forward_list<Ty>::pop_front()
 {
-	if (count_ == 0) std::cout << "Stack is empty" << std::endl;
-	else
+	node *tmp;
+	tmp = head->next;
+	Ty r = head->data;
+	delete head;
+	head = tmp;
+	--count_;
+	return r;
+}
+
+template <class Ty>
+Ty forward_list<Ty>::pop_back()
+{
+	Ty r;
+	node* front = head;
+	while (front->next->next != nullptr)
 	{
-		for (int i = 0; i<count_; i++)
-			std::cout << array_[i] << ' ';
+		front = front->next;
 	}
-	std::cout << std::endl;
+	r = front->next->data;
+	delete front->next;
+	front->next = nullptr;
+	--count_;
+	return r;
+}
+
+template <class Ty>
+forward_list<Ty>::forward_list(std::initializer_list<Ty> list)
+{
+	head = nullptr;
+	count_ = 0;
+	for (auto& item : list)
+	{
+		emplace_back(item);
+		count_++;
+	}
 }
