@@ -2,53 +2,24 @@
 
 #include "stack.hpp"
 
+TEST_CASE("init") 
+{
+    forward_list<int> s;
+    REQUIRE(s.count() == 0);
+     REQUIRE(!s.empty());
+}
+
+TEST_CASE("init list") 
+{
+    forward_list<int> s={1, 2, 3, 4, 5};
+    REQUIRE(s.count() == 5);
+}
+
 TEST_CASE("push") 
 {
-    stack<int> Stack;
-    Stack.push(5);
-    Stack.push(7);
-    int val=Stack.pop()
-    REQUIRE(Stack.count() == 2);
-    REQUIRE( val== 7);
+   forward_list<int> s;
+    s.push(5);
+    s.push(7);
+    REQUIRE(s.count() == 2);
 }
 
-TEST_CASE("pop") 
-{
-    stack<int> Stack;
-    Stack.push(5);
-    Stack.push(7);
-    Stack.push(9);
-    int val =Stack.pop();
-    REQUIRE(Stack.count() == 2);
-    REQUIRE(val==9);
-}
-
-TEST_CASE("1") 
-{
-    stack<int> Stack;
-    REQUIRE(Stack.count() == 0);
-}
-TEST_CASE("2") 
-{
-    stack<int> Stack;
-    Stack.push(5);
-    Stack.push(7);
-    Stack.push(9);
-    stack<int> s(Stack);
-    REQUIRE(s.count() == 3);
-    int val =s.pop();
-    REQUIRE(val==9);
-     int val =s.pop();
-    REQUIRE(val==7);
-     int val =s.pop();
-    REQUIRE(val==5);
-}
-TEST_CASE("2") 
-{
-    stack<int> Stack;
-    Stack.push(5);
-    Stack.push(7);
-    Stack.push(9);
-    stack<int> s(Stack);
-    REQUIRE(s == Stack);
-}
