@@ -239,6 +239,5 @@ forward_list<Ty>::forward_list(std::initializer_list<Ty> list)
 	for (auto& item : list)
 	{
 		emplace_back(item);
-		count_++;
 	}
 }
